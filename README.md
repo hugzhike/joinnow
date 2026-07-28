@@ -56,42 +56,58 @@ src/
     legal/                    # Layout partagé des pages légales
   data/                       # Données de démonstration (activités, FAQ)
   lib/
-    store/waitlist-store.ts    # Stockage des inscriptions + génération du code de parrainage
+    store/
+      waitlist-store.ts          # Dispatcher : Supabase si configuré, sinon fichier local
+      supabase-store.ts          # Implémentation Supabase (production)
+      supabase-client.ts          # Client Supabase serveur (service role key)
+      file-store.ts               # Fallback JSON local (dev sans config)
+      referral-code.ts             # Génération du code de parrainage
     validation.ts               # Schéma zod partagé client/serveur
     analytics.ts                 # Abstraction analytics (voir ANALYTICS.md)
     waitlist-options.ts          # Libellés des options de formulaire
   types/                      # Types TypeScript partagés
 ```
 
-## Stockage des inscriptions (v1)
+## Stockage des inscriptions
 
-Par défaut, chaque inscription est écrite dans `.data/waitlist-entries.json`
-à la racine du projet (fichier ignoré par git). C'est suffisant pour
-développer en local ou héberger sur un serveur avec disque persistant.
+Le store (`src/lib/store/waitlist-store.ts`) choisit automatiquement son
+backend au démarrage :
 
-**Sur un hébergement serverless (Vercel, etc.), le système de fichiers est
-en lecture seule** : le code détecte l'échec d'écriture et bascule
-automatiquement sur un stockage en mémoire, propre à chaque instance. Le
-formulaire continue de fonctionner pour une démo, mais les données ne
-persistent pas entre deux déploiements ou "cold starts". **Ne pas lancer
-la liste d'attente publiquement sans brancher une vraie base de données au
-préalable.**
+- **`SUPABASE_URL` et `SUPABASE_SERVICE_ROLE_KEY` définies** → les
+  inscriptions sont lues/écrites dans Supabase (`supabase-store.ts`).
+  C'est le mode utilisé en production.
+- **Sinon** → fallback sur un fichier `.data/waitlist-entries.json` local
+  (`file-store.ts`), pour développer sans configuration. Sur un hébergement
+  serverless sans Supabase configuré, ce fallback bascule lui-même en
+  mémoire (non persistant) si le disque est en lecture seule — pratique
+  pour une démo, mais **ne jamais lancer la liste d'attente publiquement
+  dans cet état**.
+
+Les deux implémentations exposent exactement les mêmes fonctions
+(`getWaitlistCount`, `createWaitlistEntry`), donc `src/app/api/waitlist/route.ts`
+et le reste de l'application n'ont pas besoin de savoir lequel des deux
+backends est actif.
 
 ### Connecter Supabase
 
-1. Crée un projet sur [supabase.com](https://supabase.com) et récupère l'URL
-   et les clés API.
-2. Ajoute-les dans `.env.local` (voir `.env.example`).
-3. Crée la table :
+1. Crée un projet sur [supabase.com](https://supabase.com) et récupère
+   l'URL du projet et la **clé `service_role`** (Project Settings → API).
+2. Ajoute-les dans `.env.local` en local, et comme variables d'environnement
+   sur ton hébergeur en production (voir `.env.example`) :
+   ```
+   SUPABASE_URL=https://xxxx.supabase.co
+   SUPABASE_SERVICE_ROLE_KEY=eyJ...
+   ```
+3. Crée la table via le SQL Editor de Supabase :
 
    ```sql
-   create table waitlist_entries (
+   create table if not exists public.waitlist_entries (
      id uuid primary key default gen_random_uuid(),
      first_name text not null,
-     email text not null unique,
+     email text not null,
      city text not null,
      age_range text,
-     activities text[] not null,
+     activities text[] not null default '{}',
      frequency text not null,
      platform text not null,
      wants_ambassador boolean not null default false,
@@ -100,13 +116,25 @@ préalable.**
      referral_count integer not null default 0,
      created_at timestamptz not null default now()
    );
+
+   -- Empêche les doublons d'inscription, insensible à la casse.
+   create unique index if not exists waitlist_entries_email_unique_idx
+     on public.waitlist_entries (lower(email));
+
+   -- RLS activé sans policy : seule la clé service_role (utilisée
+   -- uniquement côté serveur) peut lire/écrire cette table. Les clés
+   -- publiques (anon) n'y ont jamais accès, même si elles fuitent.
+   alter table public.waitlist_entries enable row level security;
    ```
 
-4. Remplace l'implémentation de `src/lib/store/waitlist-store.ts` par des
-   appels au [client Supabase](https://supabase.com/docs/reference/javascript/introduction)
-   (`createWaitlistEntry` → `insert`, `getWaitlistCount` → `select count`).
-   Les deux fonctions exportées ont la même signature : le reste de
-   l'application (formulaire, API route) n'a rien à changer.
+4. Redéploie — le store bascule automatiquement sur Supabase dès que les
+   deux variables d'environnement sont détectées, sans autre changement de
+   code.
+
+> **Important** : seule la clé `service_role` est utilisée, et uniquement
+> dans du code serveur (`route.ts` → `waitlist-store.ts`). Elle ne doit
+> jamais être préfixée `NEXT_PUBLIC_` ni référencée depuis un Client
+> Component — cela l'exposerait dans le bundle envoyé au navigateur.
 
 ## Connecter une plateforme d'emailing
 

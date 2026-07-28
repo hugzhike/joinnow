@@ -33,3 +33,9 @@ export interface WaitlistSubmitResult {
   referralLink: string;
   totalSignups: number;
 }
+
+export interface CreateWaitlistEntryResult {
+  entry: WaitlistEntry;
+  position: number;
+  totalSignups: number;
+}
