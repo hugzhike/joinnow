@@ -32,9 +32,13 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# local waitlist storage (v1 JSON-file store, see README)
+/.data/
 
 # typescript
 *.tsbuildinfo
