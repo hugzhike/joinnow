@@ -320,6 +320,14 @@ export function WaitlistForm() {
         <button type="submit" disabled={isSubmitting} className="btn-primary w-full py-4 text-base">
           {isSubmitting ? "Envoi en cours..." : "Rejoindre la liste d'attente"}
         </button>
+
+        <p className="text-center text-sm text-ink-400">
+          En m&rsquo;inscrivant, j&rsquo;accepte la{" "}
+          <a href="/confidentialite" className="underline hover:text-ink-600">
+            politique de confidentialité
+          </a>
+          .
+        </p>
       </form>
 
       {result ? (

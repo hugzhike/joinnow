@@ -79,7 +79,7 @@ export function Footer() {
                 <Music2 className="h-5 w-5" aria-hidden="true" />
               </a>
               <a
-                href="mailto:hello@joinnow.app"
+                href="mailto:hugz.hike@gmail.com"
                 aria-label="Contacter JoinNow par email"
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
               >

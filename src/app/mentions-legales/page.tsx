@@ -22,7 +22,7 @@ export default function LegalNoticePage() {
       <p>
         Responsable de la publication : équipe fondatrice de JoinNow.
         <br />
-        Contact : <a href="mailto:hello@joinnow.app">hello@joinnow.app</a>
+        Contact : <a href="mailto:hugz.hike@gmail.com">hugz.hike@gmail.com</a>
         <br />
         <em>[Raison sociale, forme juridique, adresse et numéro SIRET à
         compléter dès la création de la société.]</em>

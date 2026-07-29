@@ -17,11 +17,11 @@ export default function ContactPage() {
       </p>
 
       <a
-        href="mailto:hello@joinnow.app"
+        href="mailto:hugz.hike@gmail.com"
         className="inline-flex w-fit items-center gap-2 rounded-full bg-flame-500 px-6 py-3.5 text-sm font-semibold text-white no-underline shadow-[var(--shadow-glow)] transition-colors hover:bg-flame-600"
       >
         <Mail className="h-4 w-4" aria-hidden="true" />
-        hello@joinnow.app
+        hugz.hike@gmail.com
       </a>
 
       <p>

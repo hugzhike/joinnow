@@ -41,10 +41,10 @@ export default function PrivacyPage() {
 
       <h2>Où sont stockées ces données</h2>
       <p>
-        En version de démonstration locale, ces données sont stockées dans un
-        fichier sur le serveur qui exécute le site. Avant tout lancement
-        public, cette liste sera migrée vers une base de données sécurisée
-        (Supabase) — voir le fichier README du projet pour le détail
+        Ces données sont stockées dans une base de données sécurisée
+        Supabase. Il n&rsquo;existe plus de fichier local sur le serveur qui
+        exécute le site&nbsp;: la migration vers Supabase a déjà été
+        effectuée — voir le fichier README du projet pour le détail
         technique.
       </p>
 
@@ -52,7 +52,7 @@ export default function PrivacyPage() {
       <p>
         Conformément au RGPD, tu peux demander l&rsquo;accès, la correction ou
         la suppression de tes données à tout moment en écrivant à{" "}
-        <a href="mailto:hello@joinnow.app">hello@joinnow.app</a>.
+        <a href="mailto:hugz.hike@gmail.com">hugz.hike@gmail.com</a>.
       </p>
     </LegalLayout>
   );

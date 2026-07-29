@@ -147,7 +147,7 @@ import { Resend } from "resend";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 await resend.emails.send({
-  from: "JoinNow <hello@joinnow.app>",
+  from: "JoinNow <hugz.hike@gmail.com>",
   to: entry.email,
   subject: "Bienvenue sur la liste d'attente JoinNow",
   html: `...`,
