@@ -322,7 +322,10 @@ export function WaitlistForm() {
         </button>
 
         <p className="text-center text-sm text-ink-400">
-          En m&rsquo;inscrivant, j&rsquo;accepte la{" "}
+          En m&rsquo;inscrivant, j&rsquo;accepte de recevoir un email au
+          lancement de JoinNow. Mon adresse ne sera utilisée que pour cela, ne
+          sera jamais transmise à des tiers, et je peux me désinscrire à tout
+          moment. En savoir plus&nbsp;:{" "}
           <a href="/confidentialite" className="underline hover:text-ink-600">
             politique de confidentialité
           </a>

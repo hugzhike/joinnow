@@ -33,8 +33,9 @@ export default function PrivacyPage() {
       <h2>Pourquoi ces données sont collectées</h2>
       <p>
         Ces informations servent uniquement à mesurer l&rsquo;intérêt pour le
-        projet JoinNow, à prioriser les prochaines villes de lancement, et à
-        te contacter lorsque l&rsquo;application sera prête à être testée.
+        projet JoinNow, à prioriser les prochaines villes de lancement, à
+        informer les inscrit·e·s du lancement de l&rsquo;application, et à te
+        contacter lorsque l&rsquo;application sera prête à être testée.
         Elles ne sont ni vendues, ni partagées avec des tiers à des fins
         commerciales.
       </p>
