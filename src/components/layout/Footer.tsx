@@ -61,19 +61,20 @@ export function Footer() {
             <p className="text-xs font-bold uppercase tracking-wide text-white/40">Nous suivre</p>
             <div className="flex gap-3">
               <a
-                href="https://instagram.com/joinnow.app"
+                href="https://www.instagram.com/joinnow.fr/"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="JoinNow sur Instagram"
+                aria-label="Instagram JoinNow"
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
               >
                 <InstagramGlyph className="h-5 w-5" />
               </a>
+              {/* TODO: handle TikTok à renommer en joinnow vers le 23 août — mettre à jour cette URL */}
               <a
-                href="https://www.tiktok.com/@joinnow.app"
+                href="https://www.tiktok.com/@gtavlgameplay"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="JoinNow sur TikTok"
+                aria-label="TikTok JoinNow"
                 className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
               >
                 <Music2 className="h-5 w-5" aria-hidden="true" />
