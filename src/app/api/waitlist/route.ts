@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
-import { waitlistSchema } from "@/lib/validation";
+import { resolveActivities, waitlistSchema } from "@/lib/validation";
 import { createWaitlistEntry, getWaitlistCount } from "@/lib/store/waitlist-store";
 import type { WaitlistSubmitResult } from "@/types/waitlist";
 
@@ -33,7 +33,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const { entry, position, totalSignups } = await createWaitlistEntry(parsed.data);
+  // "Autre" is a client-only pseudo-activity: swap it out for the free-text
+  // value the user typed before it ever reaches storage.
+  const { entry, position, totalSignups } = await createWaitlistEntry({
+    ...parsed.data,
+    activities: resolveActivities(parsed.data),
+  });
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
   const referralLink = `${siteUrl}/?ref=${entry.referralCode}`;

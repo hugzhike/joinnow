@@ -5,8 +5,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, Smartphone } from "lucide-react";
 import { waitlistSchema, type WaitlistFormValues } from "@/lib/validation";
-import { popularActivityTypes } from "@/data/activities";
-import { ageRangeOptions, frequencyOptions } from "@/lib/waitlist-options";
+import {
+  ageRangeOptions,
+  frequencyOptions,
+  waitlistActivityOptions,
+  OTHER_ACTIVITY_ID,
+} from "@/lib/waitlist-options";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import { ConfirmationModal } from "./ConfirmationModal";
@@ -38,6 +42,7 @@ export function WaitlistForm() {
       city: "",
       ageRange: undefined,
       activities: [],
+      otherActivity: "",
       frequency: undefined,
       platform: undefined,
       wantsAmbassador: false,
@@ -79,6 +84,10 @@ export function WaitlistForm() {
     const isSelected = activities.includes(id);
     const next = isSelected ? activities.filter((a) => a !== id) : [...activities, id];
     setValue("activities", next, { shouldValidate: true });
+    if (id === OTHER_ACTIVITY_ID && isSelected) {
+      // Deselecting "Autre" empties the free-text field and clears its error.
+      setValue("otherActivity", "", { shouldValidate: true });
+    }
     track("activity_selected", { activity: id, selected: !isSelected });
   };
 
@@ -214,7 +223,7 @@ export function WaitlistForm() {
             Quelles activités t&rsquo;intéressent ?
           </legend>
           <div className="flex flex-wrap gap-2">
-            {popularActivityTypes.map((activity) => {
+            {waitlistActivityOptions.map((activity) => {
               const selected = activities.includes(activity.id);
               return (
                 <button
@@ -235,6 +244,31 @@ export function WaitlistForm() {
               );
             })}
           </div>
+          {activities.includes(OTHER_ACTIVITY_ID) ? (
+            <div className="mt-3">
+              <label
+                htmlFor="otherActivity"
+                className="mb-1.5 block text-sm font-semibold text-ink-700"
+              >
+                Quelle activité ?
+              </label>
+              <input
+                id="otherActivity"
+                type="text"
+                maxLength={60}
+                aria-invalid={!!errors.otherActivity}
+                aria-describedby={errors.otherActivity ? "otherActivity-error" : undefined}
+                className="w-full rounded-xl border border-ink-100 bg-white px-4 py-3 text-ink-900 outline-none transition-colors focus:border-flame-400 focus:ring-2 focus:ring-flame-100"
+                placeholder="Ex : escape game, pétanque, poterie..."
+                {...register("otherActivity")}
+              />
+              {errors.otherActivity ? (
+                <span id="otherActivity-error">
+                  <FieldError message={errors.otherActivity.message} />
+                </span>
+              ) : null}
+            </div>
+          ) : null}
           {errors.activities ? (
             <FieldError message={errors.activities.message} />
           ) : null}
